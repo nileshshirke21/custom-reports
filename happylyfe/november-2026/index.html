@@ -131,13 +131,6 @@ svg text{font-family:inherit}
   <div><h3>Paid traffic</h3><div id="funnelPaid"></div></div>
   <div><h3>All traffic</h3><div id="funnelAll"></div></div>
  </div>
- <h3>Paid and all traffic side by side</h3>
- <div class="wrap">
-  <table>
-   <thead><tr><th>Step</th><th>Paid traffic</th><th>All traffic</th></tr></thead>
-   <tbody id="sidetable"></tbody>
-  </table>
- </div>
  <h3>Paid traffic by device</h3>
  <div class="wrap">
   <table>
@@ -231,7 +224,6 @@ var cols=[P,"#2F5A44",G,LEAF,Y];
 function funnel(id,v){var mx=v[0];v.forEach(function(n,i){$(id).appendChild(el("div","bar","<span>"+STEPS[i]+"</span><div class='track'><div class='fill' style='width:"+Math.max(n>0?1.2:0,n/mx*100)+"%;background:"+cols[i]+"'></div></div><span class='n'>"+fmt(n)+"</span>"))})}
 funnel("funnelPaid",DEV.All);funnel("funnelAll",ALL.All);
 STEPS.forEach(function(s,i){
- $("sidetable").appendChild(el("tr","","<td>"+s+"</td><td>"+fmt(DEV.All[i])+"</td><td>"+fmt(ALL.All[i])+"</td>"));
  $("devtable").appendChild(el("tr","","<td>"+s+"</td><td>"+fmt(DEV.All[i])+"</td><td>"+fmt(DEV.mobile[i])+"</td><td>"+fmt(DEV.desktop[i])+"</td><td>"+fmt(DEV.tablet[i])+"</td>"));
  $("devtableAll").appendChild(el("tr","","<td>"+s+"</td><td>"+fmt(ALL.All[i])+"</td><td>"+fmt(ALL.mobile[i])+"</td><td>"+fmt(ALL.desktop[i])+"</td><td>"+fmt(ALL.tablet[i])+"</td>"));
 });
