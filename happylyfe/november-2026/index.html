@@ -58,6 +58,7 @@ tbody tr:hover{background:var(--cream)}
 .box{background:var(--cream);border-left:6px solid var(--yellow);border-radius:12px;padding:14px 16px;margin-top:12px}
 .box ul{margin:6px 0 0;padding-left:20px}
 .box li{margin-bottom:4px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:22px}
 .bar{display:grid;grid-template-columns:130px 1fr 70px;gap:12px;align-items:center;margin-bottom:8px;font-size:14px}
 .track{height:20px;background:var(--mint);border-radius:10px;overflow:hidden}
 .fill{height:100%;border-radius:10px}
@@ -124,14 +125,31 @@ svg text{font-family:inherit}
 </section>
 
 <section class="sec">
- <h2>Conversions</h2>
- <p class="lead">What shoppers from Google Ads did on the site, in users, Nov 9 to 23. Source: GA4.</p>
- <div id="funnel"></div>
- <h3>By device</h3>
+ <h2>Purchase journey funnel</h2>
+ <p class="lead">How many users reached each step, Nov 9 to 23. Source: GA4. Paid traffic is the traffic from our Google Ads campaigns. All traffic is every channel together.</p>
+ <div class="two">
+  <div><h3>Paid traffic</h3><div id="funnelPaid"></div></div>
+  <div><h3>All traffic</h3><div id="funnelAll"></div></div>
+ </div>
+ <h3>Paid and all traffic side by side</h3>
+ <div class="wrap">
+  <table>
+   <thead><tr><th>Step</th><th>Paid traffic</th><th>All traffic</th></tr></thead>
+   <tbody id="sidetable"></tbody>
+  </table>
+ </div>
+ <h3>Paid traffic by device</h3>
  <div class="wrap">
   <table>
    <thead><tr><th>Step</th><th>All devices</th><th>Mobile</th><th>Desktop</th><th>Tablet</th></tr></thead>
    <tbody id="devtable"></tbody>
+  </table>
+ </div>
+ <h3>All traffic by device</h3>
+ <div class="wrap">
+  <table>
+   <thead><tr><th>Step</th><th>All devices</th><th>Mobile</th><th>Desktop</th><th>Tablet</th></tr></thead>
+   <tbody id="devtableAll"></tbody>
   </table>
  </div>
  <div class="box">
@@ -208,9 +226,15 @@ function draw(){
 Object.keys(MT).forEach(function(k){var b=el("button","chip"+(k===met?" on":""),MT[k][0].replace("Daily ","").replace(" (THB)",""));b.textContent=({spend:"Spend",clicks:"Clicks",impressions:"Impressions"})[k];b.onclick=function(){met=k;document.querySelectorAll("#metseg .chip").forEach(function(x){x.classList.remove("on")});b.classList.add("on");draw()};$("metseg").appendChild(b)});
 draw();var rt;window.addEventListener("resize",function(){clearTimeout(rt);rt=setTimeout(draw,120)});
 
-var cols=[P,"#2F5A44",G,LEAF,Y],mxv=DEV.All[0];
-DEV.All.forEach(function(n,i){$("funnel").appendChild(el("div","bar","<span>"+STEPS[i]+"</span><div class='track'><div class='fill' style='width:"+Math.max(n>0?1.2:0,n/mxv*100)+"%;background:"+cols[i]+"'></div></div><span class='n'>"+fmt(n)+"</span>"))});
-STEPS.forEach(function(s,i){$("devtable").appendChild(el("tr","","<td>"+s+"</td><td>"+fmt(DEV.All[i])+"</td><td>"+fmt(DEV.mobile[i])+"</td><td>"+fmt(DEV.desktop[i])+"</td><td>"+fmt(DEV.tablet[i])+"</td>"))});
+var ALL={All:[19652,2015,153,78,13],mobile:[1742,995,95,60,5],desktop:[17876,983,55,17,8],tablet:[72,37,3,1,0]};
+var cols=[P,"#2F5A44",G,LEAF,Y];
+function funnel(id,v){var mx=v[0];v.forEach(function(n,i){$(id).appendChild(el("div","bar","<span>"+STEPS[i]+"</span><div class='track'><div class='fill' style='width:"+Math.max(n>0?1.2:0,n/mx*100)+"%;background:"+cols[i]+"'></div></div><span class='n'>"+fmt(n)+"</span>"))})}
+funnel("funnelPaid",DEV.All);funnel("funnelAll",ALL.All);
+STEPS.forEach(function(s,i){
+ $("sidetable").appendChild(el("tr","","<td>"+s+"</td><td>"+fmt(DEV.All[i])+"</td><td>"+fmt(ALL.All[i])+"</td>"));
+ $("devtable").appendChild(el("tr","","<td>"+s+"</td><td>"+fmt(DEV.All[i])+"</td><td>"+fmt(DEV.mobile[i])+"</td><td>"+fmt(DEV.desktop[i])+"</td><td>"+fmt(DEV.tablet[i])+"</td>"));
+ $("devtableAll").appendChild(el("tr","","<td>"+s+"</td><td>"+fmt(ALL.All[i])+"</td><td>"+fmt(ALL.mobile[i])+"</td><td>"+fmt(ALL.desktop[i])+"</td><td>"+fmt(ALL.tablet[i])+"</td>"));
+});
 })();
 </script>
 </body>
